@@ -50,6 +50,8 @@ const BorrowBook = () => {
       console.error('Error creating borrow record:', error);
     }
   };
+  
+
   return (
     <div>
       <h2>Borrow Book</h2>
