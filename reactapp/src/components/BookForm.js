@@ -1,5 +1,5 @@
 // src/components/BookForm.js
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 
@@ -13,6 +13,7 @@ const BookForm = () => {
     publicationYear: '',
     available: true
   });
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if (id) {
@@ -28,16 +29,19 @@ const BookForm = () => {
     }
   }, [id]);
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setBook(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
+  const validate = () => {
+    const newErrors = {};
+    if (!book.title) newErrors.title = 'Title is required';
+    if (!book.author) newErrors.author = 'Author is required';
+    if (!book.isbn) newErrors.isbn = 'ISBN is required';
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validate()) return;
+
     try {
       if (id) {
         await api.put(`/books/${id}`, book);
@@ -50,70 +54,86 @@ const BookForm = () => {
     }
   };
   return (
-    <div>
-      <h2>{id ? 'Edit Book' : 'Add New Book'}</h2>
+    <div className="form-container">
+      <h2 className="text-xl font-semibold mb-4">
+        {id ? 'Edit Book' : 'Add New Book'}
+      </h2>
       <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label className="form-label">Title</label>
+        <div className="mb-4">
+          <label htmlFor="title">Title</label>
           <input
+            id="title"
             type="text"
-            className="form-control"
             name="title"
             value={book.title}
-            onChange={handleChange}
-            required
+            onChange={(e) => setBook({...book, title: e.target.value})}
+            className={errors.title ? 'error' : ''}
           />
+          {errors.title && <p className="error">{errors.title}</p>}
         </div>
-        <div className="mb-3">
-          <label className="form-label">Author</label>
+
+        <div className="mb-4">
+          <label htmlFor="author">Author</label>
           <input
+            id="author"
             type="text"
-            className="form-control"
             name="author"
             value={book.author}
-            onChange={handleChange}
-            required
+            onChange={(e) => setBook({...book, author: e.target.value})}
+            className={errors.author ? 'error' : ''}
           />
+          {errors.author && <p className="error">{errors.author}</p>}
         </div>
-        <div className="mb-3">
-          <label className="form-label">ISBN</label>
+
+        <div className="mb-4">
+          <label htmlFor="isbn">ISBN</label>
           <input
+            id="isbn"
             type="text"
-            className="form-control"
             name="isbn"
             value={book.isbn}
-            onChange={handleChange}
-            required
+            onChange={(e) => setBook({...book, isbn: e.target.value})}
+            className={errors.isbn ? 'error' : ''}
           />
+          {errors.isbn && <p className="error">{errors.isbn}</p>}
         </div>
-        <div className="mb-3">
-          <label className="form-label">Publication Year</label>
+
+        <div className="mb-4">
+          <label htmlFor="publicationYear">Publication Year</label>
           <input
+            id="publicationYear"
             type="number"
-            className="form-control"
             name="publicationYear"
             value={book.publicationYear}
-            onChange={handleChange}
+            onChange={(e) => setBook({...book, publicationYear: e.target.value})}
           />
         </div>
+
         {id && (
-          <div className="mb-3 form-check">
+          <div className="mb-4 flex items-center">
             <input
+              id="available"
               type="checkbox"
-              className="form-check-input"
               name="available"
               checked={book.available}
-              onChange={handleChange}
-              id="availableCheck"
+              onChange={(e) => setBook({...book, available: e.target.checked})}
+              className="mr-2"
             />
-            <label className="form-check-label" htmlFor="availableCheck">
-              Available for borrowing
-            </label>
+            <label htmlFor="available" className="mb-0">Available for borrowing</label>
           </div>
         )}
-        <button type="submit" className="btn btn-primary">
-          {id ? 'Update' : 'Save'}
-        </button>
+        <div className="flex justify-between">
+          <button
+            type="button"
+            className="btn-secondary"
+            onClick={() => navigate('/books')}
+          >
+            Cancel
+          </button>
+          <button type="submit" className="btn-primary">
+            {id ? 'Update Book' : 'Add Book'}
+          </button>
+        </div>
       </form>
     </div>
   );
