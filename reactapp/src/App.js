@@ -2,9 +2,17 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './components/Auth';
-import ProtectedRoute from './components/ProtectedRoute';
 import './App.css';
 import Navbar from './components/Navbar';
+// import Login from './components/Login';
+import BookList from './components/BookList';
+import BookForm from './components/BookForm';
+import BorrowerList from './components/BorrowerList';
+import BorrowBook from './components/BorrowBook';
+import BorrowerBorrows from './components/BorrowerBorrows';
+import Reports from './components/Reports';
+import FineManagement from './components/FineManagement';
+
 
 function App() {
   return (
@@ -14,7 +22,7 @@ function App() {
           <Navbar />
           <main className="container">
             <Routes>
-              <Route path="/login" element={<Login />} />
+              {/* <Route path="/login" element={<Login />} /> */}
               <Route path="/" element={<BookList />} />
               <Route path="/books" element={<BookList />} />
               <Route path="/books/new" element={<BookForm />} />
