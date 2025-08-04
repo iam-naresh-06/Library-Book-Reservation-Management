@@ -7,13 +7,12 @@ import BookForm from './components/BookForm';
 import BorrowerList from './components/BorrowerList';
 import BorrowBook from './components/BorrowBook';
 import BorrowerBorrows from './components/BorrowerBorrows';
-import Navbar from './components/Navbar';
+// import Navbar from './components/Navbar';
 
 function App() {
   return (
     <Router>
       <div className="App">
-        <Navbar />
         <div className="container">
           <Routes>
             <Route path="/" element={<BookList />} />
