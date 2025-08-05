@@ -12,13 +12,16 @@ import java.util.List;
 @Service
 @Transactional
 public class BookService {
+
     @Autowired
     private BookRepository bookRepository;
 
     public Book addBook(Book book) {
-        // Keep ISBN check but make it testable
-        if (book.getIsbn() != null && bookRepository.existsByIsbn(book.getIsbn())) {
-            throw new BusinessValidationException("Duplicate ISBN");
+        // Validate ISBN uniqueness (if provided)
+        if (book.getIsbn() != null && !book.getIsbn().isEmpty()) {
+            if (bookRepository.existsByIsbn(book.getIsbn())) {
+                throw new BusinessValidationException("ISBN already exists");
+            }
         }
         return bookRepository.save(book);
     }
@@ -26,11 +29,6 @@ public class BookService {
     public Book getBookById(Long id) {
         return bookRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Book not found with id: " + id));
-    }
-
-    public Book getBookByIsbn(String isbn) {
-        return bookRepository.findByIsbn(isbn)
-                .orElseThrow(() -> new ResourceNotFoundException("Book not found with ISBN: " + isbn));
     }
 
     public List<Book> getAllBooks() {
@@ -41,10 +39,12 @@ public class BookService {
         Book existingBook = getBookById(id);
         
         // Prevent ISBN updates if already set
-        if (existingBook.getIsbn() != null && !existingBook.getIsbn().equals(bookDetails.getIsbn())) {
+        if (existingBook.getIsbn() != null && 
+            !existingBook.getIsbn().equals(bookDetails.getIsbn())) {
             throw new BusinessValidationException("ISBN cannot be changed");
         }
         
+        // Update other fields
         existingBook.setTitle(bookDetails.getTitle());
         existingBook.setAuthor(bookDetails.getAuthor());
         existingBook.setPublicationYear(bookDetails.getPublicationYear());
@@ -58,9 +58,5 @@ public class BookService {
             throw new ResourceNotFoundException("Book not found with id: " + id);
         }
         bookRepository.deleteById(id);
-    }
-
-    public boolean isBookAvailable(Long bookId) {
-        return getBookById(bookId).getAvailable();
     }
 }

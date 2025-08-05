@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 @Service
 @Transactional
@@ -73,5 +74,15 @@ public class BorrowService {
         record.setReturnDate(LocalDate.now());
         record.setStatus("RETURNED");
         return borrowRecordRepository.save(record);
+    }
+
+    public List<BorrowRecord> getActiveBorrowRecords() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getActiveBorrowRecords'");
+    }
+
+    public List<BorrowRecord> getBorrowRecordsByBorrower(Long borrowerId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getBorrowRecordsByBorrower'");
     }
 }

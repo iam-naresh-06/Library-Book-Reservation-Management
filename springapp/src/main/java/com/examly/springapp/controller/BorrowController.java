@@ -22,7 +22,7 @@ public class BorrowController {
             @RequestParam String dueDate) {
         return ResponseEntity.ok(borrowService.borrowBook(
             bookId, 
-            borrowerId, null));
+            borrowerId));
     }
 
     @PostMapping("/{id}/return")
