@@ -1,5 +1,9 @@
 package com.examly.springapp.service;
 
+import com.examly.springapp.entity.Book;
+import com.examly.springapp.exception.BusinessValidationException;
+import com.examly.springapp.repository.BookRepository;
+import com.examly.springapp.repository.BorrowRecordRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
