@@ -1,6 +1,7 @@
 // src/main/java/com/examly/springapp/controller/BookController.java
 package com.examly.springapp.controller;
 
+import com.examly.springapp.entity.Book;
 import com.examly.springapp.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

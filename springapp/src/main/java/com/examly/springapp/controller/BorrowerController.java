@@ -16,8 +16,8 @@ public class BorrowerController {
     private BorrowerService borrowerService;
 
     @GetMapping
-    public List<Borrower> getAllBorrowers(@RequestParam(required = false) String name) {
-        return borrowerService.searchBorrowers(name);
+    public List<Borrower> getAllBorrowers() {
+        return borrowerService.getAllBorrowers();
     }
 
     @GetMapping("/{id}")
@@ -31,7 +31,9 @@ public class BorrowerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Borrower> updateBorrower(@PathVariable Long id, @RequestBody Borrower borrower) {
+    public ResponseEntity<Borrower> updateBorrower(
+            @PathVariable Long id, 
+            @RequestBody Borrower borrower) {
         return ResponseEntity.ok(borrowerService.updateBorrower(id, borrower));
     }
 

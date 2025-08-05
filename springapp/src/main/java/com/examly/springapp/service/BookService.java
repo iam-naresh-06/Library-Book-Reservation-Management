@@ -41,19 +41,4 @@ public class BookService {
         Book book = getBookById(id);
         bookRepository.delete(book);
     }
-    
-    public List<Book> searchBooks(String title, String author, Boolean available) {
-        if (title != null && author != null && available != null) {
-            return bookRepository.findByTitleContainingIgnoreCaseAndAuthorContainingIgnoreCaseAndAvailable(title, author, available);
-        } else if (title != null && author != null) {
-            return bookRepository.findByTitleContainingIgnoreCaseAndAuthorContainingIgnoreCase(title, author);
-        } else if (title != null) {
-            return bookRepository.findByTitleContainingIgnoreCase(title);
-        } else if (author != null) {
-            return bookRepository.findByAuthorContainingIgnoreCase(author);
-        } else if (available != null) {
-            return bookRepository.findByAvailable(available);
-        }
-        return bookRepository.findAll();
-    }
 }
