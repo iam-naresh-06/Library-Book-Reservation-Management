@@ -1,32 +1,36 @@
 // src/main/java/com/examly/springapp/service/BorrowService.java
+
 package com.examly.springapp.service;
 
 import com.examly.springapp.entity.Book;
 import com.examly.springapp.entity.BorrowRecord;
-import com.examly.springapp.entity.Borrower;
 import com.examly.springapp.exception.BusinessValidationException;
 import com.examly.springapp.exception.ResourceNotFoundException;
 import com.examly.springapp.repository.BookRepository;
 import com.examly.springapp.repository.BorrowRecordRepository;
 import com.examly.springapp.repository.BorrowerRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Optional;
+
 
 @Service
 public class BorrowService {
 
-    @Autowired
-    private BorrowRecordRepository borrowRecordRepository;
+    private final BookRepository bookRepository;
+    private final BorrowerRepository borrowerRepository;
+    private final BorrowRecordRepository borrowRecordRepository;
 
-    @Autowired
-    private BookRepository bookRepository;
+    public BorrowService(BookRepository bookRepository, 
+                        BorrowerRepository borrowerRepository, 
+                        BorrowRecordRepository borrowRecordRepository) {
+        this.bookRepository = bookRepository;
+        this.borrowerRepository = borrowerRepository;
+        this.borrowRecordRepository = borrowRecordRepository;
+    }
 
-    @Autowired
-    private BorrowerRepository borrowerRepository;
-
-    public BorrowRecord borrowBook(Long bookId, Long borrowerId, LocalDate dueDate) {
+    public BorrowRecord borrowBook(Long bookId, Long borrowerId) {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new ResourceNotFoundException("Book not found"));
         
@@ -37,31 +41,30 @@ public class BorrowService {
         Borrower borrower = borrowerRepository.findById(borrowerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Borrower not found"));
 
-        BorrowRecord record = new BorrowRecord(book, borrower, dueDate);
         book.setAvailable(false);
         bookRepository.save(book);
 
-        return borrowRecordRepository.save(record);
+        BorrowRecord borrowRecord = new BorrowRecord();
+        borrowRecord.setBook(book);
+        borrowRecord.setBorrower(borrower);
+        borrowRecord.setBorrowDate(LocalDate.now());
+
+        return borrowRecordRepository.save(borrowRecord);
     }
 
-    public BorrowRecord returnBook(Long recordId) {
-        BorrowRecord record = borrowRecordRepository.findById(recordId)
+    public BorrowRecord returnBook(Long borrowRecordId) {
+        BorrowRecord borrowRecord = borrowRecordRepository.findById(borrowRecordId)
                 .orElseThrow(() -> new ResourceNotFoundException("Borrow record not found"));
 
-        Book book = record.getBook();
+        if (borrowRecord.getReturnDate() != null) {
+            throw new BusinessValidationException("Book already returned");
+        }
+
+        Book book = borrowRecord.getBook();
         book.setAvailable(true);
         bookRepository.save(book);
 
-        record.setReturnDate(LocalDate.now());
-        record.setStatus("RETURNED");
-        return borrowRecordRepository.save(record);
-    }
-
-    public List<BorrowRecord> getActiveBorrowRecords() {
-        return borrowRecordRepository.findByStatus("ACTIVE");
-    }
-
-    public List<BorrowRecord> getBorrowRecordsByBorrower(Long borrowerId) {
-        return borrowRecordRepository.findByBorrowerId(borrowerId);
+        borrowRecord.setReturnDate(LocalDate.now());
+        return borrowRecordRepository.save(borrowRecord);
     }
 }
