@@ -25,7 +25,7 @@ public class BookService {
 
     public Book addBook(Book book) {
         // Validate title
-        if (book.getTitle() == null || book.getTitle().trim().isEmpty()) {
+        if (book.getTitle() == null || ((Object) book.getTitle()).trim().isEmpty()) {
             throw new BusinessValidationException("Title cannot be empty");
         }
 

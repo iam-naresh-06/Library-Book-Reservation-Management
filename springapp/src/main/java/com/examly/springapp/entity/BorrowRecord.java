@@ -1,11 +1,12 @@
-// src/main/java/com/examly/springapp/entity/BorrowRecord.java
 package com.examly.springapp.entity;
 
+import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Entity
 public class BorrowRecord {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     @ManyToOne
@@ -23,18 +24,83 @@ public class BorrowRecord {
     
     // Constructors
     public BorrowRecord() {}
-    
+
     public BorrowRecord(Book book, Borrower borrower, LocalDate dueDate) {
         this.book = book;
         this.borrower = borrower;
         this.dueDate = dueDate;
     }
 
-    public void setBorrower(Borrower borrower2) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setBorrower'");
-    }
-    
     // Getters and Setters
-    // ... (implement all getters and setters)
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Book getBook() {
+        return book;
+    }
+
+    public void setBook(Book book) {
+        this.book = book;
+    }
+
+    public Borrower getBorrower() {
+        return borrower;
+    }
+
+    public void setBorrower(Borrower borrower) {
+        this.borrower = borrower;
+    }
+
+    public LocalDate getBorrowDate() {
+        return borrowDate;
+    }
+
+    public void setBorrowDate(LocalDate borrowDate) {
+        this.borrowDate = borrowDate;
+    }
+
+    public LocalDate getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public LocalDate getReturnDate() {
+        return returnDate;
+    }
+
+    public void setReturnDate(LocalDate returnDate) {
+        this.returnDate = returnDate;
+        if (returnDate != null) {
+            this.status = "RETURNED";
+        }
+    }
+
+    public String getStatus() {
+        // Update status if book is overdue and not yet returned
+        if ("ACTIVE".equals(status) && LocalDate.now().isAfter(dueDate) && returnDate == null) {
+            status = "OVERDUE";
+        }
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    // Business logic methods
+    public boolean isActive() {
+        return "ACTIVE".equals(status);
+    }
+
+    public boolean isOverdue() {
+        return LocalDate.now().isAfter(dueDate) && returnDate == null;
+    }
 }
