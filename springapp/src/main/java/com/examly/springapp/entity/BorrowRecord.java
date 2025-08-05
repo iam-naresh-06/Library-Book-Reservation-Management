@@ -1,6 +1,7 @@
 // src/main/java/com/examly/springapp/entity/BorrowRecord.java
 package com.examly.springapp.entity;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
@@ -9,9 +10,11 @@ public class BorrowRecord {
     private Long id;
     
     @ManyToOne
+    @JoinColumn(name = "book_id", nullable = false)
     private Book book;
     
     @ManyToOne
+    @JoinColumn(name = "borrower_id", nullable = false)
     private Borrower borrower;
     
     private LocalDate borrowDate = LocalDate.now();
@@ -19,7 +22,7 @@ public class BorrowRecord {
     private LocalDate returnDate;
     private String status = "ACTIVE"; // ACTIVE, RETURNED, OVERDUE, LOST
     
-    // Constructors, Getters, and Setters
+    // Constructors
     public BorrowRecord() {}
     
     public BorrowRecord(Book book, Borrower borrower, LocalDate dueDate) {
@@ -28,5 +31,6 @@ public class BorrowRecord {
         this.dueDate = dueDate;
     }
     
-    // Getters and Setters for all fields
+    // Getters and Setters
+    // ... (implement all getters and setters)
 }

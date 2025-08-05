@@ -39,11 +39,4 @@ public class BorrowerService {
         Borrower borrower = getBorrowerById(id);
         borrowerRepository.delete(borrower);
     }
-
-    public List<Borrower> searchBorrowers(String name) {
-        if (name != null) {
-            return borrowerRepository.findByNameContainingIgnoreCase(name);
-        }
-        return borrowerRepository.findAll();
-    }
 }

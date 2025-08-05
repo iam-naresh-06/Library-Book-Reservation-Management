@@ -26,22 +26,42 @@ public class BorrowService {
     @Autowired
     private BorrowerRepository borrowerRepository;
 
-    public List<BorrowRecord> getAllBorrowRecords() {
-        return borrowRecordRepository.findAll();
-    }
-
-    public BorrowRecord getBorrowRecordById(Long id) {
-        return borrowRecordRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Borrow record not found with id: " + id));
-    }
-
     public BorrowRecord borrowBook(Long bookId, Long borrowerId, LocalDate dueDate) {
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new ResourceNotFoundException("Book not found with id: " + bookId));
+                .orElseThrow(() -> new ResourceNotFoundException("Book not found"));
         
         if (!book.getAvailable()) {
             throw new BusinessValidationException("Book is not available for borrowing");
         }
 
         Borrower borrower = borrowerRepository.findById(borrowerId)
-                .orElseThrow(() -> new ResourceNotFoundException("Borrower not found with id: " + borrowerId));
+                .orElseThrow(() -> new ResourceNotFoundException("Borrower not found"));
+
+        BorrowRecord record = new BorrowRecord(book, borrower, dueDate);
+        book.setAvailable(false);
+        bookRepository.save(book);
+
+        return borrowRecordRepository.save(record);
+    }
+
+    public BorrowRecord returnBook(Long recordId) {
+        BorrowRecord record = borrowRecordRepository.findById(recordId)
+                .orElseThrow(() -> new ResourceNotFoundException("Borrow record not found"));
+
+        Book book = record.getBook();
+        book.setAvailable(true);
+        bookRepository.save(book);
+
+        record.setReturnDate(LocalDate.now());
+        record.setStatus("RETURNED");
+        return borrowRecordRepository.save(record);
+    }
+
+    public List<BorrowRecord> getActiveBorrowRecords() {
+        return borrowRecordRepository.findByStatus("ACTIVE");
+    }
+
+    public List<BorrowRecord> getBorrowRecordsByBorrower(Long borrowerId) {
+        return borrowRecordRepository.findByBorrowerId(borrowerId);
+    }
+}
