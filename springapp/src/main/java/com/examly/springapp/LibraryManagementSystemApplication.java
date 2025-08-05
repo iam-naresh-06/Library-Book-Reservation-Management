@@ -1,4 +1,3 @@
-// src/main/java/com/examly/springapp/LibraryManagementSystemApplication.java
 package com.examly.springapp;
 
 import org.springframework.boot.SpringApplication;
