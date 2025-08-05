@@ -92,6 +92,11 @@ public class Book {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'setAvailable'");
     }
+
+    public boolean isPresent() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'isPresent'");
+    }
     
     // Getters and Setters for all fields
 }

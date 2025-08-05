@@ -12,6 +12,7 @@ import com.examly.springapp.repository.BorrowerRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -66,5 +67,15 @@ public class BorrowService {
 
         borrowRecord.setReturnDate(LocalDate.now());
         return borrowRecordRepository.save(borrowRecord);
+    }
+
+    public List<BorrowRecord> getActiveBorrowRecords() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getActiveBorrowRecords'");
+    }
+
+    public List<BorrowRecord> getBorrowRecordsByBorrower(Long borrowerId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getBorrowRecordsByBorrower'");
     }
 }

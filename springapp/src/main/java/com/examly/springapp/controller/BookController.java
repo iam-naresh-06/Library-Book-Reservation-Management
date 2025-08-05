@@ -6,7 +6,6 @@ import com.examly.springapp.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 @RestController
 @RequestMapping("/api/books")
 public class BookController {
@@ -15,7 +14,7 @@ public class BookController {
 
     // Test Case: Should return 200 with book list (BookControllerTest.testGetAllBooks)
     @GetMapping
-    public ResponseEntity<List<Book>> getAllBooks() {
+    public ResponseEntity<Object> getAllBooks() {
         return ResponseEntity.ok(bookService.getAllBooks());
     }
 

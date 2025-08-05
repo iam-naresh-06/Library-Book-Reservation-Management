@@ -1,34 +1,43 @@
-// src/main/java/com/examly/springapp/service/BookService.java
 package com.examly.springapp.service;
 
 import com.examly.springapp.entity.Book;
 import com.examly.springapp.exception.BusinessValidationException;
 import com.examly.springapp.exception.ResourceNotFoundException;
 import com.examly.springapp.repository.BookRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class BookService {
-    @Autowired
-    private BookRepository bookRepository;
 
-    // Test Case: Should return all books (BookServiceTest.testGetAllBooks)
-    public List<Book> getAllBooks() {
-        return bookRepository.findAll(); 
+    private final BookRepository bookRepository;
+
+    public BookService(BookRepository bookRepository) {
+        this.bookRepository = bookRepository;
     }
 
-    // Test Case: Should throw ResourceNotFoundException when book not found (BookServiceTest.testGetBookByIdNotFound)
-    public Book getBookById(Long id) {
+    public Book getBookById(long id) {
         return bookRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Book not found with id: " + id));
+               .orElseThrow(() -> new ResourceNotFoundException("Book not found with id: " + id));
     }
 
-    // Test Case: Should save book with valid fields (BookValidationTest)
     public Book addBook(Book book) {
-        if(book.getTitle() == null || ((Object) book.getTitle()).trim().isEmpty()) {
+        // Validate title
+        if (book.getTitle() == null || book.getTitle().trim().isEmpty()) {
             throw new BusinessValidationException("Title cannot be empty");
         }
+
+        // Validate ISBN uniqueness
+        if (bookRepository.findByIsbn(book.getIsbn()).isPresent()) {
+            throw new BusinessValidationException("ISBN already exists");
+        }
+
         return bookRepository.save(book);
+    }
+
+    public List<Book> getAllBooks() {
+        return bookRepository.findAll();
     }
 }

@@ -1,7 +1,6 @@
 // src/main/java/com/examly/springapp/entity/BorrowRecord.java
 package com.examly.springapp.entity;
 
-import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
@@ -29,6 +28,11 @@ public class BorrowRecord {
         this.book = book;
         this.borrower = borrower;
         this.dueDate = dueDate;
+    }
+
+    public void setBorrower(Borrower borrower2) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setBorrower'");
     }
     
     // Getters and Setters
