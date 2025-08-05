@@ -1,10 +1,16 @@
 // src/main/java/com/examly/springapp/entity/Borrower.java
 package com.examly.springapp.entity;
 
-import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;DENTITY)
+    private Long id;
+    
+   
 
 @Entity
 public class Borrower {

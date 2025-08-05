@@ -1,9 +1,16 @@
 // src/main/java/com/examly/springapp/entity/Book.java
 package com.examly.springapp.entity;
 
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.hibernate.annotations.CascadeType;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Book {
