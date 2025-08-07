@@ -14,32 +14,50 @@ const BookList = ({ books, onDelete, onBorrow }) => {
   });
 
   return (
-    <div>
-      <div>
-        <input 
-          placeholder="Search books..." 
-          value={searchTerm} 
-          onChange={(e) => setSearchTerm(e.target.value)} 
+    <div data-testid="book-list">
+      <div className="controls">
+        <input
+          type="text"
+          placeholder="Search books..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          data-testid="search-input"
         />
-        <select value={filter} onChange={(e) => setFilter(e.target.value)}>
+        <select
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+          data-testid="filter-select"
+        >
           <option value="all">All Books</option>
           <option value="available">Available</option>
           <option value="borrowed">Borrowed</option>
         </select>
       </div>
+      
       {filteredBooks.length === 0 ? (
-        <p>No books found</p>
+        <p data-testid="empty-message">No books found</p>
       ) : (
-        <ul>
+        <ul data-testid="books-container">
           {filteredBooks.map(book => (
-            <li key={book.id}>
-              {book.title} by {book.author} (ISBN: {book.isbn})
+            <li key={book.id} data-testid={`book-${book.id}`}>
+              <span data-testid="book-title">{book.title}</span> by 
+              <span data-testid="book-author">{book.author}</span>
               {book.available ? (
-                <button onClick={() => onBorrow(book.id)}>Borrow</button>
+                <button
+                  onClick={() => onBorrow(book.id)}
+                  data-testid={`borrow-btn-${book.id}`}
+                >
+                  Borrow
+                </button>
               ) : (
-                <span> - Borrowed</span>
+                <span data-testid="borrowed-label"> (Borrowed)</span>
               )}
-              <button onClick={() => onDelete(book.id)}>Delete</button>
+              <button
+                onClick={() => onDelete(book.id)}
+                data-testid={`delete-btn-${book.id}`}
+              >
+                Delete
+              </button>
             </li>
           ))}
         </ul>
