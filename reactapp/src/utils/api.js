@@ -1,44 +1,19 @@
-const books = [];
-const borrowers = [];
-const borrows = [];
+import axios from 'axios';
 
-export const getBooks = () => Promise.resolve([...books]);
+const API_BASE_URL = '/api';
 
-export const addBook = (book) => {
-  const id = Date.now().toString();
-  const newBook = { ...book, id, available: true };
-  books.push(newBook);
-  return Promise.resolve(newBook);
-};
+export const addBook = (book) => axios.post(`${API_BASE_URL}/books`, book);
+export const updateBook = (id, book) => axios.put(`${API_BASE_URL}/books/${id}`, book);
+export const getBook = (id) => axios.get(`${API_BASE_URL}/books/${id}`);
+export const fetchBooks = () => axios.get(`${API_BASE_URL}/books`);
+export const deleteBook = (id) => axios.delete(`${API_BASE_URL}/books/${id}`);
 
-export const deleteBook = (id) => {
-  const index = books.findIndex((b) => b.id === id);
-  if (index !== -1) books.splice(index, 1);
-  return Promise.resolve();
-};
+export const addBorrower = (borrower) => axios.post(`${API_BASE_URL}/borrowers`, borrower);
+export const updateBorrower = (id, borrower) => axios.put(`${API_BASE_URL}/borrowers/${id}`, borrower);
+export const getBorrower = (id) => axios.get(`${API_BASE_URL}/borrowers/${id}`);
+export const fetchBorrowers = () => axios.get(`${API_BASE_URL}/borrowers`);
+export const deleteBorrower = (id) => axios.delete(`${API_BASE_URL}/borrowers/${id}`);
 
-export const getBorrowers = () => Promise.resolve([...borrowers]);
-
-export const addBorrower = (borrower) => {
-  const id = Date.now().toString();
-  const newBorrower = { ...borrower, id };
-  borrowers.push(newBorrower);
-  return Promise.resolve(newBorrower);
-};
-
-export const borrowBook = ({ borrowerId, bookId }) => {
-  borrows.push({ borrowerId, bookId, date: new Date().toISOString() });
-  const book = books.find(b => b.id === bookId);
-  if (book) book.available = false;
-  return Promise.resolve();
-};
-
-export const returnBook = (bookId) => {
-  const index = borrows.findIndex(b => b.bookId === bookId);
-  if (index !== -1) borrows.splice(index, 1);
-  const book = books.find(b => b.id === bookId);
-  if (book) book.available = true;
-  return Promise.resolve();
-};
-
-export const getActiveBorrows = () => Promise.resolve([...borrows]);
+export const borrowBook = (borrowData) => axios.post(`${API_BASE_URL}/borrow`, borrowData);
+export const returnBook = (borrowId) => axios.post(`${API_BASE_URL}/return/${borrowId}`);
+export const getActiveBorrowsByBorrower = (borrowerId) => axios.get(`${API_BASE_URL}/borrowers/${borrowerId}/borrows`);
