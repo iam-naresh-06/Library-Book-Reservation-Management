@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { api } from '../utils/api';
+import { getBooks, deleteBook } from '../utils/api';
 
 export default function BookList() {
   const [books, setBooks] = useState([]);
   const [search, setSearch] = useState('');
 
   const loadBooks = async () => {
-    const data = await api.getBooks();
+    const data = await getBooks();
     setBooks(data);
   };
 
   useEffect(() => { loadBooks(); }, []);
 
-  const deleteBook = async (isbn) => {
-    await api.deleteBook(isbn);
+  const handleDelete = async (isbn) => {
+    await deleteBook(isbn);
     loadBooks();
   };
 
@@ -34,7 +34,7 @@ export default function BookList() {
           {filteredBooks.map(b => (
             <li key={b.isbn}>
               {b.title} - {b.author}
-              <button onClick={() => deleteBook(b.isbn)}>Delete</button>
+              <button onClick={() => handleDelete(b.isbn)}>Delete</button>
             </li>
           ))}
         </ul>

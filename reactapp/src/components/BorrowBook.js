@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { api } from '../utils/api';
+import { getBorrowers, getBooks, borrowBook } from '../utils/api';
 
 export default function BorrowBook() {
   const [borrowers, setBorrowers] = useState([]);
@@ -9,8 +9,8 @@ export default function BorrowBook() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    api.getBorrowers().then(setBorrowers);
-    api.getBooks().then(setBooks);
+    getBorrowers().then(setBorrowers);
+    getBooks().then(setBooks);
   }, []);
 
   const handleBorrow = async () => {
@@ -18,7 +18,7 @@ export default function BorrowBook() {
       return setError('Select both borrower and book');
     }
 
-    await api.borrowBook({ borrower: selectedBorrower, isbn: selectedBook });
+    await borrowBook({ borrower: selectedBorrower, isbn: selectedBook });
     setSelectedBorrower('');
     setSelectedBook('');
     setError('');

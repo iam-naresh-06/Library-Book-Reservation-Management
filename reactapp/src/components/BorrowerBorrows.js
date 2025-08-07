@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { api } from '../utils/api';
+import { getActiveBorrows, returnBook } from '../utils/api';
 
 export default function BorrowerBorrows() {
   const [borrows, setBorrows] = useState([]);
 
   const loadBorrows = async () => {
-    const data = await api.getActiveBorrows();
+    const data = await getActiveBorrows();
     setBorrows(data);
   };
 
@@ -14,7 +14,7 @@ export default function BorrowerBorrows() {
   }, []);
 
   const handleReturn = async (isbn) => {
-    await api.returnBook(isbn);
+    await returnBook(isbn);
     loadBorrows();
   };
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { api } from '../utils/api';
+import { addBook } from '../utils/api';
 
 export default function BookForm({ onBookAdded }) {
   const [title, setTitle] = useState('');
@@ -16,7 +16,7 @@ export default function BookForm({ onBookAdded }) {
       return setError('ISBN must be 13 characters long');
     }
 
-    await api.addBook({ title, author, isbn });
+    await addBook({ title, author, isbn });
     onBookAdded();
     setTitle('');
     setAuthor('');
