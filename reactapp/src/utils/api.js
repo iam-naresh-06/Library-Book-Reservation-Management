@@ -1,61 +1,44 @@
-// Mock data
-let mockBooks = [
-  { id: '1', title: 'Book 1', author: 'Author 1', isbn: '1234567890', available: true },
-  { id: '2', title: 'Book 2', author: 'Author 2', isbn: '0987654321', available: false }
-];
+const books = [];
+const borrowers = [];
+const borrows = [];
 
-let mockBorrowers = [
-  { id: '1', name: 'Borrower 1', email: 'borrower1@example.com' },
-  { id: '2', name: 'Borrower 2', email: 'borrower2@example.com' }
-];
+export const getBooks = () => Promise.resolve([...books]);
 
-let mockBorrows = [
-  { id: '1', bookId: '2', borrowerId: '1', dueDate: '2023-12-31', book: mockBooks[1] }
-];
-
-// Book functions
-export const getBooks = async () => [...mockBooks];
-export const addBook = async (book) => {
-  const newBook = { ...book, id: Date.now().toString(), available: true };
-  mockBooks.push(newBook);
-  return newBook;
-};
-export const deleteBook = async (id) => {
-  mockBooks = mockBooks.filter(book => book.id !== id);
+export const addBook = (book) => {
+  const id = Date.now().toString();
+  const newBook = { ...book, id, available: true };
+  books.push(newBook);
+  return Promise.resolve(newBook);
 };
 
-// Borrower functions
-export const getBorrowers = async () => [...mockBorrowers];
-export const addBorrower = async (borrower) => {
-  const newBorrower = { ...borrower, id: Date.now().toString() };
-  mockBorrowers.push(newBorrower);
-  return newBorrower;
+export const deleteBook = (id) => {
+  const index = books.findIndex((b) => b.id === id);
+  if (index !== -1) books.splice(index, 1);
+  return Promise.resolve();
 };
 
-// Borrow functions
-export const getBorrows = async (borrowerId) => 
-  mockBorrows.filter(borrow => borrow.borrowerId === borrowerId);
+export const getBorrowers = () => Promise.resolve([...borrowers]);
 
-export const createBorrow = async (bookId, borrowerId) => {
-  const book = mockBooks.find(b => b.id === bookId);
+export const addBorrower = (borrower) => {
+  const id = Date.now().toString();
+  const newBorrower = { ...borrower, id };
+  borrowers.push(newBorrower);
+  return Promise.resolve(newBorrower);
+};
+
+export const borrowBook = ({ borrowerId, bookId }) => {
+  borrows.push({ borrowerId, bookId, date: new Date().toISOString() });
+  const book = books.find(b => b.id === bookId);
   if (book) book.available = false;
-  
-  const newBorrow = {
-    id: Date.now().toString(),
-    bookId,
-    borrowerId,
-    dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    book: mockBooks.find(b => b.id === bookId)
-  };
-  mockBorrows.push(newBorrow);
-  return newBorrow;
+  return Promise.resolve();
 };
 
-export const returnBook = async (borrowId) => {
-  const borrow = mockBorrows.find(b => b.id === borrowId);
-  if (borrow) {
-    const book = mockBooks.find(b => b.id === borrow.bookId);
-    if (book) book.available = true;
-    mockBorrows = mockBorrows.filter(b => b.id !== borrowId);
-  }
+export const returnBook = (bookId) => {
+  const index = borrows.findIndex(b => b.bookId === bookId);
+  if (index !== -1) borrows.splice(index, 1);
+  const book = books.find(b => b.id === bookId);
+  if (book) book.available = true;
+  return Promise.resolve();
 };
+
+export const getActiveBorrows = () => Promise.resolve([...borrows]);
