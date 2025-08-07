@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
 
 const BorrowerForm = ({ onSubmit }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [formData, setFormData] = useState({
+    name: '',
+    email: ''
+  });
   const [errors, setErrors] = useState({});
 
   const validate = () => {
     const newErrors = {};
-    if (!name) newErrors.name = 'Name is required';
-    if (!email) newErrors.email = 'Email is required';
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) newErrors.email = 'Invalid email format';
-    
+    if (!formData.name.trim()) newErrors.name = 'Name is required';
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Invalid email format';
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -18,25 +22,42 @@ const BorrowerForm = ({ onSubmit }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validate()) {
-      onSubmit({ name, email });
-      setName('');
-      setEmail('');
+      onSubmit(formData);
+      setFormData({ name: '', email: '' });
     }
   };
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
+    <form onSubmit={handleSubmit} data-testid="borrower-form">
+      <div className="form-group">
         <label>Name:</label>
-        <input value={name} onChange={(e) => setName(e.target.value)} />
-        {errors.name && <span>{errors.name}</span>}
+        <input
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          data-testid="name-input"
+          className={errors.name ? 'error' : ''}
+        />
+        {errors.name && <span className="error-message" data-testid="name-error">{errors.name}</span>}
       </div>
-      <div>
+      <div className="form-group">
         <label>Email:</label>
-        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-        {errors.email && <span>{errors.email}</span>}
+        <input
+          name="email"
+          type="email"
+          value={formData.email}
+          onChange={handleChange}
+          data-testid="email-input"
+          className={errors.email ? 'error' : ''}
+        />
+        {errors.email && <span className="error-message" data-testid="email-error">{errors.email}</span>}
       </div>
-      <button type="submit">Add Borrower</button>
+      <button type="submit" data-testid="submit-button">Add Borrower</button>
     </form>
   );
 };

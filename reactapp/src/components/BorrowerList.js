@@ -2,16 +2,23 @@ import React from 'react';
 
 const BorrowerList = ({ borrowers, onSelect }) => {
   return (
-    <div>
-      <h3>Borrowers</h3>
+    <div data-testid="borrower-list">
       {borrowers.length === 0 ? (
-        <p>No borrowers found</p>
+        <p data-testid="empty-message">No borrowers found</p>
       ) : (
-        <ul>
+        <ul data-testid="borrowers-container">
           {borrowers.map(borrower => (
-            <li key={borrower.id}>
-              {borrower.name} ({borrower.email})
-              <button onClick={() => onSelect(borrower.id)}>View Borrows</button>
+            <li key={borrower.id} data-testid={`borrower-item-${borrower.id}`}>
+              <div className="borrower-info">
+                <span data-testid="borrower-name">{borrower.name}</span>
+                <span data-testid="borrower-email"> ({borrower.email})</span>
+              </div>
+              <button
+                onClick={() => onSelect(borrower.id)}
+                data-testid={`view-btn-${borrower.id}`}
+              >
+                View Borrows
+              </button>
             </li>
           ))}
         </ul>
