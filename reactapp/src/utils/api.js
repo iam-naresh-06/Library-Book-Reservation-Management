@@ -1,4 +1,4 @@
-// Mock API functions
+// utils/api.js
 const mockBooks = [
   { id: '1', title: 'Book 1', author: 'Author 1', isbn: '1234567890', available: true },
   { id: '2', title: 'Book 2', author: 'Author 2', isbn: '0987654321', available: false }
@@ -13,6 +13,7 @@ const mockBorrows = [
   { id: '1', bookId: '2', borrowerId: '1', dueDate: '2023-12-31', book: mockBooks[1] }
 ];
 
+// Book-related functions
 export const getBooks = async () => {
   return [...mockBooks];
 };
@@ -30,6 +31,7 @@ export const deleteBook = async (id) => {
   }
 };
 
+// Borrower-related functions
 export const getBorrowers = async () => {
   return [...mockBorrowers];
 };
@@ -40,6 +42,7 @@ export const addBorrower = async (borrower) => {
   return newBorrower;
 };
 
+// Borrow-related functions
 export const getBorrows = async (borrowerId) => {
   return mockBorrows.filter(borrow => borrow.borrowerId === borrowerId);
 };
