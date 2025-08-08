@@ -6,7 +6,7 @@ const BorrowBook = () => {
   const [borrowers, setBorrowers] = useState([]);
   const [selectedBookId, setSelectedBookId] = useState('');
   const [selectedBorrowerId, setSelectedBorrowerId] = useState('');
-  const [error, setError] = useState('');
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -39,7 +39,7 @@ const BorrowBook = () => {
       });
       setSelectedBookId('');
       setSelectedBorrowerId('');
-      setError('');
+      setError(null);
     } catch (err) {
       setError(err.message);
     }
@@ -87,7 +87,9 @@ const BorrowBook = () => {
           </select>
         </div>
         
-        <button type="submit">Borrow</button>
+        <button type="submit" data-testid="borrow-button">
+          Borrow
+        </button>
       </form>
     </div>
   );

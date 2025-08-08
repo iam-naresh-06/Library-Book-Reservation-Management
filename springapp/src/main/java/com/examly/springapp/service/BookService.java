@@ -7,6 +7,7 @@ import com.examly.springapp.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
@@ -17,11 +18,11 @@ public class BookService {
     private BookRepository bookRepository;
 
     public Book addBook(Book book) {
-        // Validate ISBN uniqueness (if provided)
-        if (book.getIsbn() != null && !book.getIsbn().isEmpty()) {
-            if (bookRepository.existsByIsbn(book.getIsbn())) {
-                throw new BusinessValidationException("ISBN already exists");
-            }
+        if (book.getIsbn() == null || book.getIsbn().trim().isEmpty()) {
+            throw new BusinessValidationException("ISBN is required");
+        }
+        if (bookRepository.existsByIsbn(book.getIsbn())) {
+            throw new BusinessValidationException("ISBN already exists");
         }
         return bookRepository.save(book);
     }
@@ -38,13 +39,10 @@ public class BookService {
     public Book updateBook(Long id, Book bookDetails) {
         Book existingBook = getBookById(id);
         
-        // Prevent ISBN updates if already set
-        if (existingBook.getIsbn() != null && 
-            !existingBook.getIsbn().equals(bookDetails.getIsbn())) {
+        if (!existingBook.getIsbn().equals(bookDetails.getIsbn())) {
             throw new BusinessValidationException("ISBN cannot be changed");
         }
         
-        // Update other fields
         existingBook.setTitle(bookDetails.getTitle());
         existingBook.setAuthor(bookDetails.getAuthor());
         existingBook.setPublicationYear(bookDetails.getPublicationYear());

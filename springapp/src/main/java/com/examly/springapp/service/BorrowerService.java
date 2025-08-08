@@ -1,4 +1,3 @@
-// src/main/java/com/examly/springapp/service/BorrowerService.java
 package com.examly.springapp.service;
 
 import com.examly.springapp.entity.Borrower;
