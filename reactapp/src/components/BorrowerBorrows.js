@@ -1,37 +1,69 @@
-import React, { useEffect, useState } from 'react';
-import { getActiveBorrows, returnBook } from '../utils/api';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import * as api from '../utils/api';
 
-export default function BorrowerBorrows() {
+const BorrowerBorrows = () => {
+  const { id } = useParams();
   const [borrows, setBorrows] = useState([]);
-
-  const loadBorrows = async () => {
-    const data = await getActiveBorrows();
-    setBorrows(data);
-  };
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
+    const loadBorrows = async () => {
+      try {
+        const response = await api.getActiveBorrowsByBorrower(id);
+        setBorrows(response.data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
     loadBorrows();
-  }, []);
+  }, [id]);
 
-  const handleReturn = async (isbn) => {
-    await returnBook(isbn);
-    loadBorrows();
+  const handleReturn = async (borrowId) => {
+    try {
+      await api.returnBook(borrowId);
+      setBorrows(borrows.filter(borrow => borrow.id !== borrowId));
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
+  if (loading) return <div>Loading borrows...</div>;
+  if (error) return <div>Error: [Error - You need to specify the message]</div>;
+
   return (
-    <div>
+    <div className="borrower-borrows">
       {borrows.length === 0 ? (
-        <p>No active borrows</p>
+        <div className="empty-state">No active borrows</div>
       ) : (
-        <ul>
-          {borrows.map(b => (
-            <li key={b.isbn}>
-              {b.borrower} borrowed book {b.isbn}
-              <button onClick={() => handleReturn(b.isbn)}>Return</button>
-            </li>
-          ))}
-        </ul>
+        <table>
+          <thead>
+            <tr>
+              <th>Book Title</th>
+              <th>Borrow Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {borrows.map(borrow => (
+              <tr key={borrow.id}>
+                <td>{borrow.book.title}</td>
+                <td>{borrow.borrowDate}</td>
+                <td>
+                  <button onClick={() => handleReturn(borrow.id)}>
+                    Return
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       )}
     </div>
   );
-}
+};
+
+export default BorrowerBorrows;
