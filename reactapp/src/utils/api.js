@@ -30,6 +30,16 @@ export const fetchBorrowers = async () => {
   return response.json();
 };
 
+export const addBorrower = async (borrowerData) => {
+  const response = await fetch(`${API_BASE_URL}/borrowers`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(borrowerData),
+  });
+  if (!response.ok) throw new Error('Failed to add borrower');
+  return response.json();
+};
+
 export const getActiveBorrowsByBorrower = async (borrowerId) => {
   const response = await fetch(`${API_BASE_URL}/borrowers/${borrowerId}/borrows`);
   if (!response.ok) throw new Error('Failed to fetch active borrows');

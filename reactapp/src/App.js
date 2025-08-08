@@ -1,52 +1,75 @@
-// src/App.js
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Container } from "react-bootstrap";
-
-import BookList from "./components/BookList";
-import BookForm from "./components/BookForm";
-import BorrowBook from "./components/BorrowBook";
-import BorrowerForm from "./components/BorrowerForm";
-import BorrowerBorrows from "./components/BorrowerBorrows";
-import AdminReport from "./components/AdminReport";
-import Navbar from "./components/Navbar";
-import ProtectedRoute from "./components/ProtectedRoute";
-import LoginPage from "./components/LoginPage";
-import { AuthProvider } from "./components/Auth";
+import React, { useState } from 'react';
+import BookForm from './components/BookForm';
+import BookList from './components/BookList';
+import BorrowerForm from './components/BorrowerForm';
+import BorrowerList from './components/BorrowerList';
+import BorrowBook from './components/BorrowBook';
+import './App.css';
 
 function App() {
+  const [activeTab, setActiveTab] = useState('books');
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const handleBookAdded = () => {
+    setRefreshKey(prev => prev + 1);
+  };
+
+  const handleBorrowerAdded = () => {
+    setRefreshKey(prev => prev + 1);
+  };
+
+  const handleBorrowSuccess = () => {
+    setRefreshKey(prev => prev + 1);
+  };
+
   return (
-    <AuthProvider>
-      <Router>
-        <Navbar />
-        <Container className="mt-4">
-          <Routes>
-            {/* Public Route */}
-            <Route path="/login" element={<LoginPage />} />
+    <div className="app">
+      <header>
+        <h1>Library Management System</h1>
+        <nav>
+          <button 
+            className={activeTab === 'books' ? 'active' : ''} 
+            onClick={() => setActiveTab('books')}
+          >
+            Books
+          </button>
+          <button 
+            className={activeTab === 'borrowers' ? 'active' : ''} 
+            onClick={() => setActiveTab('borrowers')}
+          >
+            Borrowers
+          </button>
+          <button 
+            className={activeTab === 'borrow' ? 'active' : ''} 
+            onClick={() => setActiveTab('borrow')}
+          >
+            Borrow Book
+          </button>
+        </nav>
+      </header>
 
-            {/* Protected Routes (accessible by authenticated users only) */}
-            <Route element={<ProtectedRoute roles={['admin', 'user']} />}>
-              <Route path="/" element={<BookList />} />
-              <Route path="/borrow-book" element={<BorrowBook />} />
-              <Route path="/borrower-borrows" element={<BorrowerBorrows />} />
-            </Route>
+      <main>
+        {activeTab === 'books' && (
+          <div className="books-section">
+            <BookForm onBookAdded={handleBookAdded} />
+            <BookList key={refreshKey} onBookDeleted={handleBookAdded} />
+          </div>
+        )}
 
-            {/* Admin-only Routes */}
-            <Route element={<ProtectedRoute roles={['admin']} />}>
-              <Route path="/admin-report" element={<AdminReport />} />
-              <Route path="/add-book" element={<BookForm />} />
-              <Route path="/add-borrower" element={<BorrowerForm />} />
-            </Route>
+        {activeTab === 'borrowers' && (
+          <div className="borrowers-section">
+            <BorrowerForm onBorrowerAdded={handleBorrowerAdded} />
+            <BorrowerList key={refreshKey} />
+          </div>
+        )}
 
-            {/* Unauthorized fallback */}
-            <Route path="/unauthorized" element={<h2>Unauthorized Access</h2>} />
-
-            {/* 404 Fallback */}
-            <Route path="*" element={<h2>404 - Page Not Found</h2>} />
-          </Routes>
-        </Container>
-      </Router>
-    </AuthProvider>
+        {activeTab === 'borrow' && (
+          <div className="borrow-section">
+            <BorrowBook onBorrowSuccess={handleBorrowSuccess} />
+          </div>
+        )}
+      </main>
+    </div>
   );
 }
 
