@@ -30,10 +30,7 @@ const BookForm = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -59,62 +56,71 @@ const BookForm = () => {
       setIsSubmitting(false);
     }
   };
- return (
+
+  return (
     <form onSubmit={handleSubmit} className="book-form">
       <h2>Add New Book</h2>
-      {errors.submit && <div className="error-message">{errors.submit}</div>}
       
       <div className="form-group">
-        <label>Title:</label>
+        <label htmlFor="title-input">Title:</label>
         <input
+          id="title-input"
           type="text"
           name="title"
           value={formData.title}
           onChange={handleChange}
-          className={errors.title ? 'error' : ''}
+          data-testid="title-input"
         />
-        {errors.title && <span className="error-message">{errors.title}</span>}
+        {errors.title && <div className="error-message" data-testid="title-error">{errors.title}</div>}
       </div>
       
       <div className="form-group">
-        <label>Author:</label>
+        <label htmlFor="author-input">Author:</label>
         <input
+          id="author-input"
           type="text"
           name="author"
           value={formData.author}
           onChange={handleChange}
-          className={errors.author ? 'error' : ''}
+          data-testid="author-input"
         />
-        {errors.author && <span className="error-message">{errors.author}</span>}
+        {errors.author && <div className="error-message" data-testid="author-error">{errors.author}</div>}
       </div>
       
+
       <div className="form-group">
-        <label>ISBN:</label>
+        <label htmlFor="isbn-input">ISBN:</label>
         <input
+          id="isbn-input"
           type="text"
           name="isbn"
           value={formData.isbn}
           onChange={handleChange}
-          className={errors.isbn ? 'error' : ''}
+          data-testid="isbn-input"
         />
-        {errors.isbn && <span className="error-message">{errors.isbn}</span>}
+        {errors.isbn && <div className="error-message" data-testid="isbn-error">{errors.isbn}</div>}
       </div>
       
       <div className="form-group">
-        <label>Publication Year:</label>
+        <label htmlFor="year-input">Publication Year:</label>
         <input
+          id="year-input"
           type="number"
           name="publicationYear"
           value={formData.publicationYear}
           onChange={handleChange}
-          className={errors.publicationYear ? 'error' : ''}
+          data-testid="year-input"
         />
         {errors.publicationYear && (
-          <span className="error-message">{errors.publicationYear}</span>
+          <div className="error-message" data-testid="year-error">{errors.publicationYear}</div>
         )}
       </div>
       
-      <button type="submit" disabled={isSubmitting}>
+      <button 
+        type="submit" 
+        disabled={isSubmitting}
+        data-testid="submit-button"
+      >
         {isSubmitting ? 'Saving...' : 'Save'}
       </button>
     </form>

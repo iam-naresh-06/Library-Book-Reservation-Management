@@ -6,22 +6,19 @@ const BorrowBook = () => {
   const [borrowers, setBorrowers] = useState([]);
   const [selectedBookId, setSelectedBookId] = useState('');
   const [selectedBorrowerId, setSelectedBorrowerId] = useState('');
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [booksResponse, borrowersResponse] = await Promise.all([
+        const [booksRes, borrowersRes] = await Promise.all([
           api.fetchBooks(),
           api.fetchBorrowers()
         ]);
-        setBooks(booksResponse.data);
-        setBorrowers(borrowersResponse.data);
+        setBooks(booksRes.data);
+        setBorrowers(borrowersRes.data);
       } catch (err) {
         setError(err.message);
-      } finally {
-        setLoading(false);
       }
     };
     loadData();
@@ -48,8 +45,6 @@ const BorrowBook = () => {
     }
   };
 
-  if (loading) return <div>Loading data...</div>;
-
   return (
     <div className="borrow-book">
       <h2>Borrow a Book</h2>
@@ -58,8 +53,9 @@ const BorrowBook = () => {
       
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>Select Book:</label>
+          <label htmlFor="book-select">Select Book:</label>
           <select 
+            id="book-select"
             value={selectedBookId} 
             onChange={(e) => setSelectedBookId(e.target.value)}
             data-testid="book-select"
@@ -74,12 +70,14 @@ const BorrowBook = () => {
         </div>
         
         <div className="form-group">
-          <label>Select Borrower:</label>
+          <label htmlFor="borrower-select">Select Borrower:</label>
           <select 
+            id="borrower-select"
             value={selectedBorrowerId} 
             onChange={(e) => setSelectedBorrowerId(e.target.value)}
             data-testid="borrower-select"
           >
+
             <option value="">-- Select a borrower --</option>
             {borrowers.map(borrower => (
               <option key={borrower.id} value={borrower.id}>
