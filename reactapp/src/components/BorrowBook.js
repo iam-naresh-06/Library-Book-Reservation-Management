@@ -69,6 +69,7 @@ const BorrowBook = () => {
           </select>
         </div>
         
+   
         <div className="form-group">
           <label htmlFor="borrower-select">Select Borrower:</label>
           <select 
@@ -77,7 +78,6 @@ const BorrowBook = () => {
             onChange={(e) => setSelectedBorrowerId(e.target.value)}
             data-testid="borrower-select"
           >
-
             <option value="">-- Select a borrower --</option>
             {borrowers.map(borrower => (
               <option key={borrower.id} value={borrower.id}>
