@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -18,12 +19,17 @@ public class BookService {
     private BookRepository bookRepository;
 
     public Book addBook(Book book) {
+        // Validate ISBN presence
         if (book.getIsbn() == null || book.getIsbn().trim().isEmpty()) {
             throw new BusinessValidationException("ISBN is required");
         }
-        if (bookRepository.existsByIsbn(book.getIsbn())) {
+        
+        // Check for duplicate ISBN using both methods for backward compatibility
+        if (bookRepository.existsByIsbn(book.getIsbn()) || 
+            bookRepository.findByIsbn(book.getIsbn()).isPresent()) {
             throw new BusinessValidationException("ISBN already exists");
         }
+        
         return bookRepository.save(book);
     }
 
