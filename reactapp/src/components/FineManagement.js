@@ -1,7 +1,6 @@
-// src/components/FineManagement.js
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Modal, Form } from 'react-bootstrap';
-import api from '../utils/api';
+import { getFines, payFine } from '../utils/api';
 
 const FineManagement = () => {
   const [fines, setFines] = useState([]);
@@ -17,7 +16,7 @@ const FineManagement = () => {
   const fetchFines = async () => {
     setLoading(true);
     try {
-      const response = await api.get('/fines');
+      const response = await getFines();
       setFines(response.data);
     } catch (error) {
       console.error('Error fetching fines:', error);
@@ -34,7 +33,7 @@ const FineManagement = () => {
 
   const processPayment = async () => {
     try {
-      await api.post(`/fines/${selectedFine.id}/pay`, {
+      await payFine(selectedFine.id, {
         amount: paymentAmount,
         paymentDate: new Date().toISOString()
       });
@@ -44,7 +43,8 @@ const FineManagement = () => {
       console.error('Error processing payment:', error);
     }
   };
-return (
+
+  return (
     <div>
       <h2>Fine Management</h2>
       {loading ? (
@@ -79,6 +79,8 @@ return (
                     {fine.paid ? 'Paid' : 'Unpaid'}
                   </span>
                 </td>
+               
+
                 <td>
                   {!fine.paid && (
                     <Button
@@ -152,5 +154,3 @@ return (
 };
 
 export default FineManagement;
-
-// npm install react-csv react-bootstrap date-fns jwt-decode

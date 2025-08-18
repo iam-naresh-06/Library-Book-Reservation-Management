@@ -1,10 +1,8 @@
-// src/components/Reports.js
 import React, { useState } from 'react';
 import { Button, Table, Form, Row, Col, Card, Spinner, Alert } from 'react-bootstrap';
-import api from '../utils/api';
 import { CSVLink } from 'react-csv';
+import { generateReportData } from '../utils/api';
 
-// Utility: safely get nested property (e.g., 'book.title')
 const getValue = (obj, path) => {
   return path.split('.').reduce((o, i) => (o ? o[i] : ''), obj);
 };
@@ -43,15 +41,13 @@ const Reports = () => {
     ]
   };
 
-  const generateReport = async () => {
+  const handleGenerateReport = async () => {
     setLoading(true);
     setError('');
     setReportData([]);
 
     try {
-      const response = await api.get(`/reports/${reportType}`, {
-        params: dateRange
-      });
+      const response = await generateReportData(reportType, dateRange);
       setReportData(response.data);
     } catch (err) {
       console.error(err);
@@ -109,7 +105,7 @@ const Reports = () => {
           <div className="text-end">
             <Button
               variant="primary"
-              onClick={generateReport}
+              onClick={handleGenerateReport}
               disabled={loading}
             >
               {loading ? (
@@ -140,6 +136,7 @@ const Reports = () => {
             </CSVLink>
           </div>
 
+ 
           <Table striped bordered hover responsive>
             <thead>
               <tr>
