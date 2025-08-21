@@ -36,6 +36,12 @@ export const AuthProvider = ({ children }) => {
     delete api.defaults.headers.common['Authorization'];
     setUser(null);
   };
+  // const logout = () => {
+  //   localStorage.removeItem('user');
+  //   localStorage.removeItem('token');
+  //   delete api.defaults.headers.common['Authorization'];
+  //   setUser(null);
+  // };
 
   return (
     <AuthContext.Provider value={{ user, login, logout }}>
